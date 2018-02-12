@@ -3,8 +3,8 @@ Antenna-框架介绍
 # 简介
 > Antenna——一款简单的点对点服务治理框架，同时它也可以作为一款灵活小巧的MVC开发框架。
 > 该框架总体逻辑架构如下：
- ![waspring](https://github.com/fellyvon/antenna/blob/master/doc/antenna.png "antenna架构图")
- > 自底向上分别为：数据层、服务层、配置层、接入层。
+> ![waspring](https://github.com/fellyvon/antenna/blob/master/doc/antenna.png "antenna架构图")
+> 自底向上分别为：数据层、服务层、配置层、接入层。
 * 数据层：用于持久化配置、日志、分析数据、缓存等
 * 服务层：提供业务逻辑等服务的实现，分为三大类：基础服务类、工具服务类、业务服务类。
 * 配置层：本框架提供配置 对外暴露的接口、可调用的接口以及一些规则的配置，比如接口暴露策略、通讯协议、白名单、重试策略、加密策略、认证策略、日志框架、异常处理策略、接口路由配置。
