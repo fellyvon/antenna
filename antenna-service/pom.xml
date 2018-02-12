@@ -1,0 +1,80 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+
+
+	<parent>
+		<groupId>com.waspring.framework</groupId>
+		<artifactId>antenna</artifactId>
+		<version>1.0.0</version>
+	</parent>
+
+	<artifactId>antenna-service</artifactId>
+	<packaging>jar</packaging>
+
+	<name>antenna-service</name>
+	<url>http://www.waspring.com</url>
+	<description>统一接口中心-服务管理</description>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>com.waspring.framework</groupId>
+			<artifactId>antenna-preservation</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpmime</artifactId>
+			<version>4.4</version>
+		</dependency>
+	</dependencies>
+
+
+	<build>
+
+		<plugins>
+			<!-- resource插件 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+
+			<!-- jetty插件 <plugin> <groupId>org.mortbay.jetty</groupId> <artifactId>jetty-maven-plugin</artifactId> 
+				<version>7.6.10.v20130312</version> <configuration> <scanIntervalSecond>10</scanIntervalSecond> 
+				<webApp> <contextPath>/repair</contextPath> </webApp> <connectors> <connector 
+				implementation="org.eclipse.jetty.server.nio.SelectChannelConnector"> <port>2222</port> 
+				<maxIdleTime>60000</maxIdleTime> </connector> </connectors> </configuration> 
+				</plugin> -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.18.1</version>
+				<configuration>
+					<skipTests>true</skipTests>
+					<testFailureIgnore>true</testFailureIgnore>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+
+ 
+</project>

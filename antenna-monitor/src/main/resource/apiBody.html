@@ -1,0 +1,49 @@
+
+<h3 id="toc_3">${api}</h3>
+<div>${description}</div>
+<ul>
+	<li>请求地址: ${url}</li>
+	<li>请求方法 ${method}</li>
+
+	<li><p>参数</p>
+
+		<table>
+			<thead>
+				<tr>
+					<th>参数名</th>
+					<th>类型</th>
+					<th>是否必填</th>
+					<th>描述</th>
+				</tr>
+			</thead>
+
+			<tbody>${inputtrs}
+			</tbody>
+		</table></li>
+
+
+
+	<li><p>返回值</p>
+
+		<table>
+			<thead>
+				<tr>
+					<th>返回值名</th>
+					<th>类型</th>
+					<th>描述</th>
+				</tr>
+			</thead>
+
+			<tbody>${outputtrs}
+			</tbody>
+		</table></li>
+	<li><p>返回值样例</p>
+
+		<div>
+			<pre>
+				<code class="language-none">  
+${response}
+</code>
+			</pre>
+		</div></li>
+</ul>
