@@ -258,8 +258,8 @@ debug=true
 logdir=logs
 ```
  
-
-
+# 开发第一个demo
+ 请移步 antenn-client 或者 antenn-monitor
 
 
 
