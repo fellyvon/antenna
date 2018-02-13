@@ -53,7 +53,7 @@ public class HanderConfigBeanFactory<T extends IHander> implements IConfigBeanFa
 					if (VisitorUtil.getVisitor().getRequest().isServer()) {/// 服务端请求的情况下
 						IConfigureProvider configureProvider = configure.getIConfigProvider(containerId, action);
 						if (configureProvider == null) {
-							LogUtil.warn(log, "action=" + action + "对应的处理程序配置不存在");
+							LogUtil.warn(log, "action=" + action + "对应的受理者处理程序配置不存在");
 							return null;
 						}
 						String providerClass = configureProvider.getProviderClass();
@@ -76,6 +76,10 @@ public class HanderConfigBeanFactory<T extends IHander> implements IConfigBeanFa
 
 					} else {/// 客户端请求
 						IConfigureInvoker configureInvoker = configure.getIConfigInvoker(containerId, action);
+						if(configureInvoker==null) {
+							LogUtil.warn(log, "action=" + action + "对应的调用者处理程序配置不存在");
+							return null;
+						}
 						String invokerClass = configureInvoker.getInvokerClass();
 						if (!StringUtils.isEmpty(invokerClass)) {/// 存在class配置就反射建立
 							hander = ReflectUtil.<T>constructorNewInstance(invokerClass,

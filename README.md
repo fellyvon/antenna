@@ -1,9 +1,10 @@
+![Antenna-logo](https://raw.githubusercontent.com/fellyvon/antenna/master/doc/logo.png "antenna-logo图") <br>
 Antenna-框架介绍
 ====
 # 简介
 Antenna——一款简单的点对点服务治理框架，同时它也可以作为一款灵活小巧的MVC开发框架。<br>
 该框架总体逻辑架构如下：<br>
- ![waspring](https://raw.githubusercontent.com/fellyvon/antenna/master/doc/antenna.png "antenna架构图") <br>
+ ![Antenna-架构](https://raw.githubusercontent.com/fellyvon/antenna/master/doc/antenna.png "antenna架构图") <br>
  自底向上分别为：数据层、服务层、配置层、接入层。<br>
 * 数据层：用于持久化配置、日志、分析数据、缓存等
 * 服务层：提供业务逻辑等服务的实现，分为三大类：基础服务类、工具服务类、业务服务类。
@@ -247,7 +248,7 @@ System.out.println(visitor.getResponse());
 </containers>
 ```
 #### 下面是一个root.properties配置的实例
-```java
+```xml
 #通讯认证用到key
 key=123501
 #通讯认证用到的sercret
@@ -260,6 +261,25 @@ logdir=logs
  
 # 开发第一个demo
  请移步 antenn-client 或者 antenn-monitor
-
+ 
+# 框架待改进
+* 性能与内存消耗<br/>
+>>> 为了提高程序的并发处理能力，当前每次visitor访问都需要反射创建provider或者invoker来处理业务逻辑，执行效率和内存上都会打折扣。
+>>>> 我们可以参考servlet的架构思路优化，即处理程序只创建一次，访问方法保证线程安全。
+* 异常处理机制<br/>
+>>>目前异常方面会被吃掉很多，没有逐级上浮，虽然可以通过log跟踪，我们希望还是能从用户端直接判断大部分异常场景！
+* 配置管理<br/>
+>>>目前通过xml配置受理者和调用者，同时要在应用启动的时候指定容器，配置起来其实挺繁琐，我们希望通过注解等方式来简化配置!
+>>>> 另外当前也不支持动态配置，可以使用第三方全局一致性服务来实现。
+* 传输认证与加密
+>>> 本框架虽然支持认证与加密，但有以下两个缺陷，一方面在传输数据量较大场景效率很低下，另一方面认证机制依赖双方的本地化配置，安全性和可维护下大大折扣。
+>>>> 当前可以通过扩展request对象解决，比如采用第三方认证中心。
+* 通讯日志
+>>> 本框架通讯日志默认采用异步队列本地文件存储，在真正的正式环境中，我们一般不会这么做，基本上会采用第三方的存储服务，可以通过扩展：IQueueTaskHander来实现。
+* 重试机制
+>>> 目标重试机制实现主要是通过第三方框架guava-retrying实现，进行了简单封装，使用变得简单，同时扩展能力缺被削弱了。
+* 补偿机制
+>>> 这里的补偿主要是指当一次调用失败后，然后刚好服务重启，是否要进行重试的机制，目前框架并未支持。可以考虑请求前持久化等方案！
+ 
 
 
