@@ -437,7 +437,7 @@ public class ApiService {
 		para.put(REQUIRED, "YES");
 		paras.add(para);
 		para = new HashMap();
-		para.put(NAME, "startTime");
+		para.put(NAME, "endTime");
 		para.put(DESCRIPTION, "截止时间,格式YYYY-MM-DD hh:mm:ss");
 		para.put(DATA_FORMART, "Date");
 		para.put(REQUIRED, "YES");

@@ -48,24 +48,7 @@
 				</configuration>
 			</plugin>
 
-			<!-- jetty插件 -->
-			<plugin>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>jetty-maven-plugin</artifactId>
-				<version>7.6.10.v20130312</version>
-				<configuration>
-					<scanIntervalSecond>10</scanIntervalSecond>
-					<webApp>
-						<contextPath>/antenna</contextPath>
-					</webApp>
-					<connectors>
-						<connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
-							<port>5555</port>
-							<maxIdleTime>60000</maxIdleTime>
-						</connector>
-					</connectors>
-				</configuration>
-			</plugin>
+		 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -76,8 +59,38 @@
 				</configuration>
 			</plugin>
 
+
 		</plugins>
 	</build>
 
- 
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<scm>
+		<url>git@github.com:fellyvon/antenna</url>
+		<connection>git@github.com:fellyvon/antenna.git</connection>
+		<developerConnection>http://www.waspring.com</developerConnection>
+	</scm>
+	<developers>
+		<developer>
+			<name>felly</name>
+			<email>fellyvon@foxmail.com</email>
+			<url>http://www.waspring.com</url>
+		</developer>
+	</developers>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>oss</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+		</snapshotRepository>
+		<repository>
+			<id>oss</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
 </project>
