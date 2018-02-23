@@ -1,0 +1,114 @@
+```xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<containers><!-- 容器集合 -->
+<!-- 配置扫码的包，用于消除本配置文件中container配置,目前并未实现//TODO -->
+	<scan base-package="antenna" />
+	 
+   <!-- 
+   container通讯容器，为本框架的配置基础单元，包含属性有：id,allowmaxnum,id-generator等，各个属性的用途解释如下：
+   1、id：非空，容器的身份标识，唯一，若重复，会取最后一个容器配置。
+   2、allowmaxnum：非空，容器允许的最大并发存在的访问者数量，用于访问上限限制。
+   3、containerclass：可空，用户可通过继承@see AbstractVisitorContainer对容器进行扩展，扩展后的类配置到这里。
+   4、 id-generator：非空，id产生策略，需要配合id-generators来使用，这里主要用于自动产生请求ID用。
+   5、transfer-timeout：非空，传输过程中时效性允许的最大等待时长，主要用于防止重放攻击，即客户端会传输过来请求发起的时间戳，服务受理端根据服务自己的时间戳减去请求时间的间隔来判定是否存在通讯异常，若存在通讯异常，会阻止当前访问者的请求。
+   6、filter：可空，过滤器，在执行具体的业务逻辑之前发生，可用于过滤请求和日志记录等场景。
+   7、log-queue：非空，日志队列，配合queue-manager来使用，主要用于异步通讯日志记录。
+   8、log-mode：非空，日志模式，即日志的存储方式，有file，jdbc等方式，这个配置决定了队列中每个节点的具体处理方式。
+    
+    -->
+	<container id="antennaContainer" allowmaxnum="2"
+		containerclass="" id-generator="randomId" transfer-timeout="10000"
+		filter="printFilter" log-queue="logqueue" log-mode="file" >
+		<!-- 服务受理组-->
+		<providers>
+		  <!-- 提供者配置实现 ，主要包含配置：id,serviceclass等,各个属性的用途解释如下：
+		   1、id：非空，服务提供的action名称，唯一，在客户端请求的时候，通过传递action字段来匹配本id，若匹配到，那么用本提供配置的服务逻辑。
+		   2、serviceclass：非空，业务处理逻辑的实现，需扩展自IService,当然本框架也可供了很多默认Service容器的实现，比如ServiceList，ServiceCollection等，作用不一样。
+		   3、providerclass：可空，用户可通过继承@see AbstractProviderHander对服务提供者进行扩展，扩展后的类配置到这里。
+		   4、listener：可空，服务提供的监听器，在服务受理的初始化、开始，结束，异常，提交等环节会触发拦截事件，便于使用者扩展响应的处理。
+		  -->
+			<provider id="parseString"
+				serviceclass="com.waspring.framework.antenna.client.ParseStringService"
+				providerclass=""  listener="com.waspring.framework.antenna.client.ParseStringListener">
+			</provider>
+		</providers>
+		<!-- 调用服务组，主要的属性为 post-url,retry-strategy-id等.
+		    1、post-url， 非空，请求路径全局配置，若invoker没有配置psot-url，那么会默认使用本地址就行远程调用。
+		    2、retry-strategy-id， 可空，重试机制全局配置，若invoker没有配置retry-strategy-id，那么会默认使用重试策略。
+		    -->
+		<invokers post-url="http://www.baidu.com"> 
+		  <!-- 调用者配置实现 ，主要包含配置：id,serviceclass等,各个属性的用途解释如下：
+		   1、id：非空，服务调用的action名称，唯一，在客户端请求远程的时候，通过传递action字段来匹配具体的业务处理方法。
+		   2、serviceclass：非空，业务处理逻辑的实现，需扩展自IService,当然本框架也可供了很多默认Service容器的实现，比如ServiceList，ServiceCollection等，作用不一样。
+		   3、invokerclass：可空，用户可通过继承@see AbstractInvokerHander对服务提供者进行扩展，扩展后的类配置到这里。
+		   4、listener：可空，服务提供的监听器，在服务受理的初始化、开始，结束，异常，提交等环节会触发拦截事件，便于使用者扩展响应的处理。
+		   5、post-url：可空，请求远程的地址，这里主要实现了http协议，所以实际上是一个http地址
+		   6、retry-strategy-id：可空，配合retry-strategys来使用，配置了请求的重试机制。
+		  -->
+			<invoker id="invokeBaidu" post-url="http://www.baidu.com"
+				invokerclass="" serviceclass="com.waspring.framework.antenna.client.ParseStringService"
+				retry-strategy-id="defaultRetry">
+			</invoker>
+			<invoker id="invokeHu8hu" post-url="http://www.hu8hu2.com"
+				serviceclass="com.waspring.framework.antenna.client.HttpInvokerService">
+			</invoker>
+		</invokers>
+		<retry-strategys><!-- 重试策略全局定义 -->
+			<retry-strategy id="defaultRetry">
+				<!--<retry-listener listener="" /> -->
+				<attempt-time-limiter limiter="12" />
+				<block-strategies sleeptime="1000" />
+				<retry-exception exception="demandException" />
+				<stop-strategy stop="attempt" attemptnumber="3" />
+				<wait_strategy wait="incrementing" sleeptime="1000"
+					increment="500" />
+				<!-- 如果返回结果满足如下，则进行重试 -->
+			</retry-strategy>
+
+		</retry-strategys>
+
+		<!-- 定义request的requestid的产生策略，默认的有uuid和random，这里配置的为自定义 -->
+		<id-generators>
+		  <!-- 序列产生器，需扩展@see IdGenerator -->
+			<id-generator id="randomId"
+				generatorclass="com.waspring.framework.antenna.access.id.RandomGenerator" />
+		</id-generators>
+
+      <!-- 异常列表定义，在重试策略中用到 -->
+		<exceptions>
+			<exception id="ioException" exceptionclass="java.io.IOException" />
+			<exception id="demandException"
+				exceptionclass="com.waspring.framework.antenna.core.hander.DemandException" />
+		</exceptions>
+       <!-- 过滤器定义，在hander中用到 -->
+		<filters>
+		<!-- 过滤器 需扩展IFilter -->
+			<filter id="printFilter" filterclass="com.waspring.framework.antenna.client.FirstFilter" />
+		</filters>
+	</container>
+
+	<!-- 队列管理器，主要有属性max-num，managerclass，他们的用途如下：
+	1、max-num：非空，队列最大数量，超过这个数量不允许再申请。
+	2、managerclass：可空，用户可通过继承@see AbstractQueueManger对管理器进行扩展，扩展后的类配置到这里。
+	 -->
+	<queue-manager max-num="100" managerclass="">
+	<!-- 队列配置，主要包含id，maxidle，executor等属性，他们的用途如下：
+	 1、id：非空，队列的身份标记，再container中配置的就是这个id
+	 2、maxidle：非空，用于控制队列的长度，超过长度不允许加入节点；
+	 3、executor：可空，队列的消费执行器，可通过继承：AbstractQueueExecutor进行扩展，扩展后的classname配置到这里。
+	 4、task-hander：非空，消费细节实现，即对出队的节点具体要做什么业务逻辑处理的实现，需扩展：@see ITaskHander
+	 5、queue-type：队列类型，分为阻塞和非阻塞两类，若非阻塞情况下，消费线程会根据executor-frequency配置进行休眠。
+	 6、executor-frequency：可空，若queue-type为noblock，那么非空。 即消费线程的休眠时长，单位毫秒！
+	  -->
+		<queue id="logqueue" maxidle="10000" executor=""
+			executor-frequency="1000"
+			task-hander="com.waspring.framework.antenna.preservation.log.FileTaskHander"
+			queue-type="noblock" />
+	</queue-manager>
+
+  <!-- import节点，可用于包含子配置文件，子配置文件和本配置文件格式要求完全一致 。例如:<import path=""/> 
+    需要注意的是：path的协议只支持：classpath://,file://,http:// 若需要支持更多协议，需要扩展本框架,详见 @See IResource-->
+
+</containers>
+```
