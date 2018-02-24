@@ -409,6 +409,20 @@ public class ApiService {
 		para.put(DESCRIPTION, "执行时长,用返回时间减去请求时间可以得到！");
 		para.put(DATA_FORMART, "Long");
 		paras.add(para);
+		
+		
+		para = new HashMap();
+		para.put(NAME, "requestContent");
+		para.put(DESCRIPTION, "请求入参");
+		para.put(DATA_FORMART, "String");
+		paras.add(para);
+		
+		
+		para = new HashMap();
+		para.put(NAME, "responseContent");
+		para.put(DESCRIPTION, "请求出参");
+		para.put(DATA_FORMART, "String");
+		paras.add(para);
 
 		return paras;
 
