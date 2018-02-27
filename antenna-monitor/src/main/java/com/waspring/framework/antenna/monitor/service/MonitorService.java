@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -11,6 +12,7 @@ import com.waspring.framework.antenna.access.util.ApplicationUtil;
 import com.waspring.framework.antenna.core.visitor.IRequest;
 import com.waspring.framework.antenna.core.visitor.IResponse;
 import com.waspring.framework.antenna.monitor.dao.MonitorDao;
+import com.waspring.framework.antenna.monitor.util.ConfigureTreeUtil;
 import com.waspring.framework.antenna.preservation.log.IQueryLog;
 import com.waspring.framework.antenna.preservation.log.LogDetail;
 import com.waspring.framework.antenna.service.AbstractService;
@@ -58,8 +60,8 @@ public class MonitorService extends AbstractService {
 			        //invoke1
 			     //providers
 			        //provider2
-			   
-			response.setData(ApplicationUtil.getApplication().getRootConfigure());
+			   List data=ConfigureTreeUtil.changeTree(ApplicationUtil.getApplication().getRootConfigure());
+			response.setData(data);
 		} else if ("containerList".equals(command)) {
 			response.setData(dao.queryProcessMonitor());
 		} else if ("runAnalysis".equals(command)) {

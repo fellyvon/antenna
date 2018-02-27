@@ -1,6 +1,7 @@
 package com.waspring.framework.antenna.monitor.service;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import com.waspring.framework.antenna.monitor.model.ApiModel;
  *
  */
 public class ApiService {
+	private BitSet bit=null;
 
 	public static final String NAME = "name";
 	public static final String DESCRIPTION = "description";
@@ -22,19 +24,36 @@ public class ApiService {
 	public static final String SUB = "sub";
 	
 	private String processMonitorResponse() {
-		return "{\n" +
-				"	\"code\": 1,\n" +
-				"	\"count\": 0,\n" +
-				"	\"data\": [{\n" +
-				"		\"cap\": 500,\n" +
-				"		\"pid\": \"monitor\",\n" +
-				"		\"visitorNum\": 7\n" +
+		return "[{\n" +
+				"	\"children\": [{\n" +
+				"		\"children\": [{\n" +
+				"			\"children\": [],\n" +
+				"			\"data\": {},\n" +
+				"			\"name\": \"调用者组\"\n" +
+				"		}, {\n" +
+				"			\"children\": [{\n" +
+				"				\"children\": [],\n" +
+				"				\"data\": {\n" +
+				"					\"id\": \"monitorProvider\",\n" +
+				"					\"serviceclass\": \"com.waspring.framework.antenna.monitor.service.MonitorService\"\n" +
+				"				},\n" +
+				"				\"name\": \"提供者:monitorProvider\"\n" +
+				"			}],\n" +
+				"			\"data\": {},\n" +
+				"			\"name\": \"受理者组\"\n" +
+				"		}],\n" +
+				"		\"data\": {\n" +
+				"			\"id\": \"monitor\",\n" +
+				"			\"log-queue\": \"monitor.logqueue\",\n" +
+				"			\"allowmaxnum\": \"500\",\n" +
+				"			\"log-mode\": \"file\",\n" +
+				"			\"transfer-timeout\": \"10000\"\n" +
+				"		},\n" +
+				"		\"name\": \"容器:monitor\"\n" +
 				"	}],\n" +
-				"	\"message\": \"处理成功！\",\n" +
-				"	\"subcode\": 0,\n" +
-				"	\"timestamp\": 1518416274602,\n" +
-				"	\"traces\": []\n" +
-				"}";
+				"	\"data\": {},\n" +
+				"	\"name\": \"容器组\"\n" +
+				"}]";
 	}
 	
 	private String  processDetailResponse() {
@@ -99,100 +118,15 @@ public class ApiService {
 	 }
 	private String containerTreeResponse() {
 	 
-	return "{\n" +
-			"	\"code\": 1,\n" +
-			"	\"count\": 0,\n" +
-			"	\"data\": {\n" +
-			"		\"configScan\": {\n" +
-			"			\"elementName\": \"scan\",\n" +
-			"			\"parent\": {\n" +
-			"				\"$ref\": \"..\"\n" +
-			"			},\n" +
-			"			\"propertyMap\": {},\n" +
-			"			\"scanPaths\": []\n" +
-			"		},\n" +
-			"		\"configureContainer\": [{\n" +
-			"			\"allowMaximum\": 500,\n" +
-			"			\"configureProviders\": {\n" +
-			"				\"configureProviders\": [{\n" +
-			"					\"elementName\": \"provider\",\n" +
-			"					\"id\": \"monitorProvider\",\n" +
-			"					\"parent\": {\n" +
-			"						\"$ref\": \"$.data.configureContainer[0].configureProviders\"\n" +
-			"					},\n" +
-			"					\"propertyMap\": {\n" +
-			"						\"id\": \"monitorProvider\",\n" +
-			"						\"serviceclass\": \"com.hu8hu.framework.antenna.monitor.service.MonitorService\"\n" +
-			"					},\n" +
-			"					\"serviceClass\": \"com.hu8hu.framework.antenna.monitor.service.MonitorService\"\n" +
-			"				}],\n" +
-			"				\"elementName\": \"providers\",\n" +
-			"				\"parent\": {\n" +
-			"					\"$ref\": \"..\"\n" +
-			"				},\n" +
-			"				\"propertyMap\": {}\n" +
-			"			},\n" +
-			"			\"elementName\": \"container\",\n" +
-			"			\"id\": \"monitor\",\n" +
-			"			\"logMode\": \"file\",\n" +
-			"			\"logQueue\": \"monitor.logqueue\",\n" +
-			"			\"parent\": {\n" +
-			"				\"$ref\": \"$.data\"\n" +
-			"			},\n" +
-			"			\"propertyMap\": {\n" +
-			"				\"id\": \"monitor\",\n" +
-			"				\"log-queue\": \"monitor.logqueue\",\n" +
-			"				\"allowmaxnum\": \"500\",\n" +
-			"				\"log-mode\": \"file\",\n" +
-			"				\"transfer-timeout\": \"10000\"\n" +
-			"			},\n" +
-			"			\"transferTimeout\": 10000\n" +
-			"		}],\n" +
-			"		\"configureImport\": [],\n" +
-			"		\"configureQueueManager\": {\n" +
-			"			\"elementName\": \"queue-manager\",\n" +
-			"			\"iConfigureQuques\": [{\n" +
-			"				\"elementName\": \"queue\",\n" +
-			"				\"executor\": \"\",\n" +
-			"				\"executorFrequency\": 100,\n" +
-			"				\"id\": \"monitor.logqueue\",\n" +
-			"				\"maxIdle\": 10000,\n" +
-			"				\"parent\": {\n" +
-			"					\"$ref\": \"$.data.configureQueueManager\"\n" +
-			"				},\n" +
-			"				\"propertyMap\": {\n" +
-			"					\"queue-type\": \"noblock\",\n" +
-			"					\"id\": \"monitor.logqueue\",\n" +
-			"					\"executor-frequency\": \"100\",\n" +
-			"					\"task-hander\": \"com.hu8hu.framework.antenna.preservation.log.FileTaskHander\",\n" +
-			"					\"maxidle\": \"10000\",\n" +
-			"					\"executor\": \"\"\n" +
-			"				},\n" +
-			"				\"taskHander\": \"com.hu8hu.framework.antenna.preservation.log.FileTaskHander\"\n" +
-			"			}],\n" +
-			"			\"managerclass\": \"\",\n" +
-			"			\"maxQueue\": 100,\n" +
-			"			\"parent\": {\n" +
-			"				\"$ref\": \"..\"\n" +
-			"			},\n" +
-			"			\"propertyMap\": {\n" +
-			"				\"managerclass\": \"\",\n" +
-			"				\"max-num\": \"100\"\n" +
-			"			}\n" +
-			"		},\n" +
-			"		\"elementName\": \"application\",\n" +
-			"		\"extendConfigure\": [],\n" +
-			"		\"importConfigureApplications\": [],\n" +
-			"		\"propertyMap\": {},\n" +
-			"		\"scan\": {\n" +
-			"			\"$ref\": \"$.data.configScan\"\n" +
-			"		}\n" +
-			"	},\n" +
-			"	\"message\": \"处理成功！\",\n" +
-			"	\"subcode\": 0,\n" +
-			"	\"timestamp\": 1518416511744,\n" +
-			"	\"traces\": []\n" +
-			"}";
+	return  "[{ \n" +
+			"    name: '父节点1'\n" +
+			"    ,children: [{\n" +
+			"      name: '子节点11'\n" +
+			"    },{\n" +
+			"      name: '子节点12'\n" +
+			"    }]\n" +
+			"  } \n" +
+			" }]";
 	}
 
 	private String runAnalysisResponse() {
