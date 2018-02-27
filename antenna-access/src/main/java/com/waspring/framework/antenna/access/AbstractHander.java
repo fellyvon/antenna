@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 
 import com.waspring.framework.antenna.access.manager.AbstractVisitorContainer;
 import com.waspring.framework.antenna.access.util.ApplicationUtil;
+import com.waspring.framework.antenna.config.property.PropertiesUtil;
 import com.waspring.framework.antenna.core.config.IConfigure;
 import com.waspring.framework.antenna.core.filter.IFilter;
 import com.waspring.framework.antenna.core.hander.AcceptUnkownException;
@@ -137,7 +138,7 @@ public abstract class AbstractHander implements IHander {
 				rollback();/// 回退状态
 				onRollback();
 			} else {
-				response = new ExceptionResponse(e);
+				response = new ExceptionResponse(e,PropertiesUtil.isDebug());
 				executeFail = true; ///// 失败状态
 			}
 		} finally {

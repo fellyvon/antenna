@@ -1,7 +1,5 @@
 package com.waspring.framework.antenna.access.manager;
 
-import java.util.concurrent.locks.Lock;
-
 import org.apache.log4j.Logger;
 
 import com.waspring.framework.antenna.access.IConfigBeanFactory;
