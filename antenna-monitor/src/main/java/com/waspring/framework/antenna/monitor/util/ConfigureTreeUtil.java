@@ -24,8 +24,10 @@ public class ConfigureTreeUtil {
 		IConfigureApplication application = (IConfigureApplication) root;
 		List<TreeNode> rootTree = new ArrayList<TreeNode>();
 		TreeNode rootNode = new TreeNode();
+		rootNode.setType("root");
 		rootTree.add(rootNode);
 		rootNode.setName("容器组");
+	
 		IConfigureContainer configureContainers[] = application.getConfigureContainer();
 		List<TreeNode> containerTree = new ArrayList<TreeNode>();
 		rootNode.setChildren(containerTree);//// 设置子节点
@@ -45,18 +47,22 @@ public class ConfigureTreeUtil {
 			return;
 		}
 		TreeNode containerNode = new TreeNode();
+		containerNode.setType(cc.getElementName());
 		containerNode.setName("容器:" + cc.getId());
 		containerNode.setData(cc.getPropertyMap());
 
 		TreeNode invokers = new TreeNode();
+		
 		invokers.setName("调用者组");
 		if(cc.getConfigureInvokers()!=null) {
 		invokers.setData(cc.getConfigureInvokers().getPropertyMap());
+		invokers.setType(cc.getConfigureInvokers().getElementName());
 		}
 		TreeNode providers = new TreeNode();
 		providers.setName("受理者组");
 		if(cc.getConfigureProviders()!=null) {
 		providers.setData(cc.getConfigureProviders().getPropertyMap());
+		providers.setType(cc.getConfigureProviders().getElementName());
 		}
 		List<TreeNode> containerSubs = new ArrayList<TreeNode>();
 		containerSubs.add(invokers);
@@ -88,6 +94,7 @@ public class ConfigureTreeUtil {
                      }
                      for(IConfigureProvider pp:ps) {
                     	 TreeNode item=new TreeNode();
+                    	 item.setType(pp.getElementName());
                     	 item.setName("提供者:"+pp.getId());
                     	 item.setData(pp.getPropertyMap());
                     	 providersList.add(item);
@@ -111,6 +118,7 @@ public class ConfigureTreeUtil {
          }
          for(IConfigureInvoker pp:ps) {
         	 TreeNode item=new TreeNode();
+        	 item.setType(pp.getElementName());
         	 item.setName("调用者:"+pp.getId());
         	 item.setData(pp.getPropertyMap());
         	 invokesList.add(item);

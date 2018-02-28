@@ -12,6 +12,15 @@ import java.util.Map;
 public class TreeNode {
 	private String name;
 	private List<TreeNode> children = new ArrayList<TreeNode>();
+	private String type;
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
 	private Map data = new HashMap();
 
 	public void putProperty(Object key, Object value) {
