@@ -24,36 +24,7 @@ public class ApiService {
 	public static final String SUB = "sub";
 	
 	private String processMonitorResponse() {
-		return "[{\n" +
-				"	\"children\": [{\n" +
-				"		\"children\": [{\n" +
-				"			\"children\": [],\n" +
-				"			\"data\": {},\n" +
-				"			\"name\": \"调用者组\"\n" +
-				"		}, {\n" +
-				"			\"children\": [{\n" +
-				"				\"children\": [],\n" +
-				"				\"data\": {\n" +
-				"					\"id\": \"monitorProvider\",\n" +
-				"					\"serviceclass\": \"com.waspring.framework.antenna.monitor.service.MonitorService\"\n" +
-				"				},\n" +
-				"				\"name\": \"提供者:monitorProvider\"\n" +
-				"			}],\n" +
-				"			\"data\": {},\n" +
-				"			\"name\": \"受理者组\"\n" +
-				"		}],\n" +
-				"		\"data\": {\n" +
-				"			\"id\": \"monitor\",\n" +
-				"			\"log-queue\": \"monitor.logqueue\",\n" +
-				"			\"allowmaxnum\": \"500\",\n" +
-				"			\"log-mode\": \"file\",\n" +
-				"			\"transfer-timeout\": \"10000\"\n" +
-				"		},\n" +
-				"		\"name\": \"容器:monitor\"\n" +
-				"	}],\n" +
-				"	\"data\": {},\n" +
-				"	\"name\": \"容器组\"\n" +
-				"}]";
+		return "[{\"cap\":500,\"pid\":\"monitor\",\"visitorNum\":1}]";
 	}
 	
 	private String  processDetailResponse() {
@@ -118,15 +89,40 @@ public class ApiService {
 	 }
 	private String containerTreeResponse() {
 	 
-	return  "[{ \n" +
-			"    name: '父节点1'\n" +
-			"    ,children: [{\n" +
-			"      name: '子节点11'\n" +
-			"    },{\n" +
-			"      name: '子节点12'\n" +
-			"    }]\n" +
-			"  } \n" +
-			" }]";
+	return "[{\n" +
+			"	\"children\": [{\n" +
+			"		\"children\": [{\n" +
+			"			\"children\": [],\n" +
+			"			\"data\": {},\n" +
+			"			\"name\": \"调用者组\"\n" +
+			"		}, {\n" +
+			"			\"children\": [{\n" +
+			"				\"children\": [],\n" +
+			"				\"data\": {\n" +
+			"					\"id\": \"monitorProvider\",\n" +
+			"					\"serviceclass\": \"com.waspring.framework.antenna.monitor.service.MonitorService\"\n" +
+			"				},\n" +
+			"				\"name\": \"提供者:monitorProvider\",\n" +
+			"				\"type\": \"provider\"\n" +
+			"			}],\n" +
+			"			\"data\": {},\n" +
+			"			\"name\": \"受理者组\",\n" +
+			"			\"type\": \"providers\"\n" +
+			"		}],\n" +
+			"		\"data\": {\n" +
+			"			\"id\": \"monitor\",\n" +
+			"			\"log-queue\": \"monitor.logqueue\",\n" +
+			"			\"allowmaxnum\": \"500\",\n" +
+			"			\"log-mode\": \"file\",\n" +
+			"			\"transfer-timeout\": \"10000\"\n" +
+			"		},\n" +
+			"		\"name\": \"容器:monitor\",\n" +
+			"		\"type\": \"container\"\n" +
+			"	}],\n" +
+			"	\"data\": {},\n" +
+			"	\"name\": \"容器组\",\n" +
+			"	\"type\": \"root\"\n" +
+			"}]";
 	}
 
 	private String runAnalysisResponse() {
