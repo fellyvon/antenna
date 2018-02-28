@@ -5,6 +5,11 @@ import java.util.UUID;
 import com.waspring.framework.antenna.core.IApplication;
 import com.waspring.framework.antenna.core.hander.IHander;
 
+/**
+ * 访问者抽象
+ * @author felly
+ *
+ */
 public interface IVisitor {
 	IRequest getRequest();
 
@@ -19,6 +24,8 @@ public interface IVisitor {
 	String getId();
 	
 	IApplication getApplicaiton();
+	
+	void agency();/// 委托受理执行
 	
 	/**
 	 * 默认构造

@@ -21,7 +21,7 @@ public interface IVisitorAware extends IVisitor {
 
 	void setApplicaiton(IApplication applicaiton);
 
-	void agency();/// 委托受理执行
+	
 
 	
 
