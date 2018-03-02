@@ -13,6 +13,15 @@ public class TreeNode {
 	private String name;
 	private List<TreeNode> children = new ArrayList<TreeNode>();
 	private String type;
+	private Map ext;
+	public Map getExt() {
+		return ext;
+	}
+
+	public void setExt(Map ext) {
+		this.ext = ext;
+	}
+
 	public String getType() {
 		return type;
 	}

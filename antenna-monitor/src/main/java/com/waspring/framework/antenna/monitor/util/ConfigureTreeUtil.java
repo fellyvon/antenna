@@ -1,7 +1,9 @@
 package com.waspring.framework.antenna.monitor.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.waspring.framework.antenna.config.parse.IConfigureApplication;
 import com.waspring.framework.antenna.config.parse.IConfigureContainer;
@@ -70,11 +72,11 @@ public class ConfigureTreeUtil {
 
 		List<TreeNode> providersSub = new ArrayList<TreeNode>();
 		providers.setChildren(providersSub);
-		parseProviders(cc.getConfigureProviders(), providersSub);
+		parseProviders(  cc,cc.getConfigureProviders(), providersSub);
 
 		List<TreeNode> invokersSub = new ArrayList<TreeNode>();
 		invokers.setChildren(invokersSub);
-		parseInvokers(cc.getConfigureInvokers(), invokersSub);
+		parseInvokers(cc,cc.getConfigureInvokers(), invokersSub);
 
 		containerNode.setChildren(containerSubs);
 		containerTree.add(containerNode);
@@ -84,7 +86,7 @@ public class ConfigureTreeUtil {
 	 * 解析受理者
 	 */
 
-	private static void parseProviders(IConfigureProviders cp, List<TreeNode> providersList) {
+	private static void parseProviders(IConfigureContainer cc,IConfigureProviders cp, List<TreeNode> providersList) {
                      if(cp==null) {
                     	return; 
                      }
@@ -97,6 +99,9 @@ public class ConfigureTreeUtil {
                     	 item.setType(pp.getElementName());
                     	 item.setName("提供者:"+pp.getId());
                     	 item.setData(pp.getPropertyMap());
+                     	 Map ext=new HashMap();
+                    	 ext.put("containerId", cc.getId());
+                    	 item.setExt(ext);
                     	 providersList.add(item);
                     	 
                      }
@@ -107,7 +112,7 @@ public class ConfigureTreeUtil {
 	 * 解析调用者
 	 */
 
-	private static void parseInvokers(IConfigureInvokers cp, List<TreeNode> invokesList) {
+	private static void parseInvokers(IConfigureContainer cc,IConfigureInvokers cp, List<TreeNode> invokesList) {
 	     if(cp==null) {
          	return; 
           }
@@ -121,6 +126,9 @@ public class ConfigureTreeUtil {
         	 item.setType(pp.getElementName());
         	 item.setName("调用者:"+pp.getId());
         	 item.setData(pp.getPropertyMap());
+        	 Map ext=new HashMap();
+        	 ext.put("containerId", cc.getId());
+        	 item.setExt(ext);
         	 invokesList.add(item);
         	 
          }
