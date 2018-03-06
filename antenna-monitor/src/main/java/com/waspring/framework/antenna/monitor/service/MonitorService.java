@@ -85,9 +85,9 @@ public class MonitorService extends AbstractService {
 		} else if ("queryLogDetail".equals(command)) {
 			String containerId = String.valueOf(request.getParameter("containerId"));
 			String action = String.valueOf(request.getParameter("hander"));
-			String date = String.valueOf(request.getParameter("date"));
-			String startDateString = date + " " + String.valueOf(request.getParameter("startTime"));
-			String endDateString = date + " " + String.valueOf(request.getParameter("endTime"));
+			//String date = String.valueOf(request.getParameter("date"));
+			String startDateString =  String.valueOf(request.getParameter("startTime"));
+			String endDateString =  String.valueOf(request.getParameter("endTime"));
 			Date startDate = null;
 			Date endDate = null;
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

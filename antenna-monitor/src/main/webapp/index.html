@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>antenna-monitor</title>
+
+
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="layui/css/layui.css">
+<script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+<style type="text/css">
+#left {
+	float: left;
+	width: 50%;
+}
+
+#right {
+	float: right;
+	width: 50%;
+}
+
+#left1 {
+	float: left;
+	width: 90%;
+}
+</style>
+</head>
+<body>
+	<!-- 导航栏 -->
+	<ul class="layui-nav" lay-filter="">
+		<img src="statics/images/logo.png" alt="logo">
+		<li class="layui-nav-item layui-this"><a href="index.html">首页</a></li>
+		<li class="layui-nav-item"><a href="containerDiagram.html">容器试图</a></li>
+		<li class="layui-nav-item"><a href="logTracking.html">日志跟踪</a></li>
+		<li class="layui-nav-item"><a href="conf.html">配置文件</a></li>
+	</ul>
+	<!-- 项目说明 -->
+	<h3>项目说明:</h3>
+	<pre
+		id="explain"> 
+		 Antenna——一款简单的点对点服务治理框架，同时它也可以作为一款灵活小巧的MVC开发框架。 
+ 
+    </pre>
+	<div id="left">
+		<div id="left1">
+			<h1>进程监控:</h1>
+		</div>
+		<div>
+			<button class="layui-btn" id="processRefresh">
+				<i class="layui-icon">&#x1002;</i>刷新
+			</button>
+		</div>
+		<table class="layui-hide" id="process" lay-filter="process"></table>
+	</div>
+
+	<div id="right">
+		<div id="left1">
+			<h1>队列监控:</h1>
+		</div>
+		<div>
+			<button class="layui-btn" id="queueRefresh">
+				<i class="layui-icon">&#x1002;</i>刷新
+			</button>
+		</div>
+		<table class="layui-hide" id="queue" lay-filter="queue"></table>
+	</div>
+
+	<script src="layui/layui.js" charset="utf-8"></script>
+	<script type="text/javascript">
+		//注意：导航 依赖 element 模块，否则无法进行功能性操作
+		layui
+				.use(
+						[ 'table', 'element' ],
+						function() {
+							var element = layui.element;
+							var table = layui.table;
+							//进程表
+							processTable = table
+									.render({
+										elem : '#process',
+										url : 'monitor?action=monitorProvider&command=processMonitor'//数据接口
+										,
+										page : false //开启分页
+										,
+										cols : [ [ //表头
+										{
+											type : 'numbers',
+											title : '序号',
+											width : '6%'
+										}, {
+											field : 'pid',
+											title : '容器ID',
+											width : '30%'
+										}, {
+											field : 'cap',
+											title : '容量',
+											width : '30%'
+										}, {
+											field : 'visitorNum',
+											title : '访问量',
+											width : '20%'
+										}, {
+										 
+											title : '操作',
+											width : '14%',
+											toolbar : "#operationDemo"
+										} ] ],
+										response: {
+											  statusCode: 1 //成功的状态码，默认：0
+											  ,msgName: 'message' //状态信息的字段名称，默认：msg
+											 }      
+									});
+
+							//队列表
+							queueTable = table
+									.render({
+										elem : '#queue',
+										url : 'monitor?action=monitorProvider&command=queueMonitor'//数据接口
+										,
+										page : false //开启分页
+										,
+										cols : [ [ //表头
+										{
+											field : 'queueId',
+											title : '队列名称',
+											width : '20%'
+										}, {
+											field : 'cap',
+											title : '容量',
+											width : '10%'
+										}, {
+											field : 'executor',
+											title : '执行器',
+											width : '20%'
+										}, {
+											field : 'hander',
+											title : '处理器',
+											width : '30%'
+										}, {
+											field : 'blockNum',
+											title : '等待量',
+											width : '20%'
+										} ] ],
+										response: {
+											  statusCode: 1 //成功的状态码，默认：0
+											  ,msgName: 'message' //状态信息的字段名称，默认：msg
+											 }   
+									});
+							// 查看详情   监听操作栏
+							table
+									.on(
+											'tool(process)',
+											function(obj) {
+												var data = obj.data //获得当前行数据
+												, layEvent = obj.event; //获得 lay-event 对应的值
+												if (layEvent === 'details') {
+													//待修改字段名
+													 
+													window.parent.layer
+															.open({
+																type : 2,
+																area : [
+																		"800px",
+																		"500px" ],
+																title : "详情",
+																content : "processDetails.html?pid="+data.pid
+															  
+															});
+												}
+											});
+							//刷新表
+							$("#processRefresh").on("click", function() {
+								
+								processTable.reload();
+							});
+
+							$("#queueRefresh").on("click", function() {
+								queueTable.reload();
+							});
+
+						});
+	</script>
+	<!-- 操作栏 -->
+	<script type="text/html" id="operationDemo">
+ 		 <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="details">详情</a>    
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>antenna-monitor-containerDiagram</title>
+
+ 
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="layui/css/layui.css">
+<script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+<style type="text/css">
+.divcss5-a {
+	margin: 10px 0
+}
+
+#left {
+	float: left;
+	width: 20%;
+}
+
+#right {
+	float: right;
+	width: 80%;
+}
+</style>
+<!-- 引入 ECharts 文件 -->
+ <script src="https://cdn.bootcss.com/echarts/4.0.4/echarts.min.js"></script>
+</head>
+
+<body>
+	<!-- 导航栏 -->
+	<ul class="layui-nav" lay-filter="">
+	  <img src="statics/images/logo.png" alt="logo">
+		<li class="layui-nav-item"><a href="index.html">首页</a></li>
+		<li class="layui-nav-item layui-this"><a href="containerDiagram.html">容器试图</a></li>
+		<li class="layui-nav-item"><a href="logTracking.html">日志跟踪</a></li>
+		<li class="layui-nav-item"><a href="conf.html">配置文件</a></li>
+	</ul>
+	<!-- 设置上边距 -->
+	<div class="divcss5-a"></div>
+	<div id="left">
+		<!-- 树形菜单栏 -->
+		<ul id="containerMenu"></ul>
+	</div>
+	<div id="right">
+		<h1 id="name"></h1>
+		<!-- 表格 -->
+		<table id="parameter" lay-filter="parameter"></table>
+		<h1 id="analysis"></h1>
+		<div id="main" style="width: 100%;height:400px;"></div>
+	</div>
+	<script src="layui/layui.js" charset="utf-8"></script>
+	<script type="text/javascript">
+		var tree_data = null;
+		var item = null;
+		var numArr = new Array();
+		layui.use([ 'tree', 'layer', 'table' ], function() {
+			var layer = layui.layer, $ = layui.jquery;
+			var table = layui.table;
+			/*获取树json  */
+			$.ajax({
+				type : "get",
+				url : "monitor?action=monitorProvider&command=containerTree",
+				dataType : "json",
+				success : function(d) {
+					layui.tree({
+						elem : '#containerMenu' //指定元素
+						,
+						target : '_blank' //是否新选项卡打开（比如节点返回href才有效）
+						,
+						click : function(item) { //点击节点回调
+
+							if (item.type == 'provider'
+									|| item.type == 'container'
+									|| item.type == 'invoker') {
+								$("#name").html(item.name);
+								$("#analysis").html("运行分析：");
+								Json = item.data;
+								var containerId = null;
+								var id = null;
+
+								//获取顶级节点id
+								if (item.ext != undefined) {
+									containerId = item.ext["containerId"];
+								}
+								;
+
+								var parameterArray = new Array();
+								for ( var p in Json) {//遍历json对象的每个key/value对,p为key
+									var parameter = {
+										name : null,
+										value : null
+									}
+									if ('id' == p) {
+										id = Json[p];
+									}
+									parameter.name = p;
+									parameter.value = Json[p];
+									parameterArray.push(parameter)
+								}
+								table.render({
+									elem : '#parameter',
+									id : 'parameter',
+									height : 350,
+									cols : [ [ //表头
+									{
+										field : 'name',
+										title : '参数名',
+										width : '50%',
+										style : 'cursor: pointer;'
+									}, {
+										field : 'value',
+										title : '参数值',
+										width : '50%',
+										style : 'cursor: pointer;'
+									} ] ],
+									data : parameterArray
+								});
+								/*获取图表信息  */
+								var dayArr = getChartData(containerId, id);
+
+								// 基于准备好的dom，初始化echarts实例
+								var myChart = echarts.init(document
+										.getElementById('main'));
+
+								option = {
+									xAxis : {
+										type : 'category',
+										name: '日期',
+										data : dayArr,
+									},
+									yAxis : {
+										type : 'value',
+										name :'访问次数',
+									},
+									series : [ {
+										data : numArr,
+										type : 'line',
+										color: '#660099'
+									} ]
+								};
+
+								// 使用刚指定的配置项和数据显示图表。
+								myChart.setOption(option);
+
+							}
+						},
+						nodes : d.data
+					});
+
+				}
+			});
+		
+			/* 获取图表信息 */
+			function getChartData(containerId, id) {
+				var dayArr = new Array();
+				$.ajax({
+					type : "get",
+					url : "monitor?action=monitorProvider&command=runAnalysis",
+					async : false,
+					data : {
+						"containerId" : containerId,
+						"hander" : id
+					},
+					dataType : "json",
+					success : function(d) {
+						/* 获取当月天数 */
+						if (d.data[0].year != null && d.data[0].month != null) {
+							dayArr = getMonthDays(d.data[0].year,
+									d.data[0].month);
+
+						}
+						var dayLength = dayArr.length;
+						numArr = getNum(dayLength, d.data)
+					}
+
+				});
+
+				return dayArr;
+			}
+			/* 获取访问量  */
+			function getNum(dayLength, arr) {
+
+				//寻找对应天数的次数
+				var numArr = [];
+				for ( var day = 1; day < dayLength + 1; day++) {
+					for ( var i = 0, len = arr.length; i < len; i++) {
+						if (day == arr[i].day) {
+							numArr.push(arr[i].times);
+						}
+					}
+					if (numArr[day - 1] == null) {
+						numArr[day - 1] = 0;
+					}
+
+				}
+				return numArr;
+			}
+			/* 获取天数数组 */
+			function getMonthDays(year, month) {
+				var tmpList = [];
+				var endDay = new Date(year, month, 0).getDate();
+				for ( var i = 1; i <= endDay; i++) {
+					/* 		tmpList.push(i < 10 ? "0" + i : i.toString()); */
+					tmpList.push(i);
+				}
+
+				return tmpList;
+			}
+
+		});
+	</script>
+</body>
+</html>

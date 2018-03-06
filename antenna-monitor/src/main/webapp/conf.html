@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>antenna-monitor-conf</title>
+ 
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    
+      <link rel="stylesheet" href="layui/css/layui.css">
+<script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>  </head>
+  
+  <body>
+  	<!-- 导航栏 -->
+	<ul class="layui-nav" lay-filter="">
+			  <img src="statics/images/logo.png" alt="logo">
+		<li class="layui-nav-item"><a href="index.html">首页</a></li>
+		<li class="layui-nav-item"><a href="containerDiagram.html">容器试图</a></li>
+		<li class="layui-nav-item"><a href="logTracking.html">日志跟踪</a></li>
+		<li class="layui-nav-item layui-this"><a href="conf.html">配置文件</a></li>
+	</ul>
+		 
+    
+     <pre class="layui-code"  lay-title="xml" lay-skin="nodepad" id="deployFile">
+      //代码区域
+ 
+    </pre>     
+ 
+    <script src="layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript">
+  //获取配置文件内容
+		$.ajax({
+		url : "monitor?action=monitorProvider&command=getConfig",
+		type : "POST",
+		dataType : "json",
+		success : function(data) {
+			$("#deployFile").text( data.data);
+			layui.use('code', function(){ //加载code模块
+		    	  layui.code({"about":false}); //引用code方法
+		    	});
+		}
+	});
+    
+    
+    	
+ 	 
+</script>
+  </body>
+</html>

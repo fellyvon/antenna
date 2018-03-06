@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>antenna-monitor-processDetails</title>
+
+
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="layui/css/layui.css">
+<script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+
+</head>
+
+<body>
+	<input type="hidden" id="pid" />
+	<table class="layui-hide" id="processDetails"
+		lay-filter="processDetails"></table>
+	<script src="layui/layui.js" charset="utf-8"></script>
+	<script type="text/javascript">
+		function getQueryString(name) {
+			var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+			var r = window.location.search.substr(1).match(reg);
+			if (r != null)
+				return unescape(r[2]);
+			return null;
+		}
+		layui
+				.use(
+						'table',
+						function() {
+							var table = layui.table;
+							//进程详情表
+							processDetailsTable = table
+									.render({
+										elem : '#processDetails',
+										url : 'monitor?action=monitorProvider&command=processDetail&pid='
+												+ getQueryString("pid") //数据接口
+										,
+										page : true //开启分页
+										,
+										cols : [ [ //表头
+										{
+											type : 'numbers',
+											title : '序号',
+											width : '6%'
+										}, {
+											field : 'visitorId',
+											title : '访问者ID',
+											width : '40%'
+										}, {
+											field : 'stayTime',
+											title : '停留时长(ms)',
+											width : '40%'
+										}, {
+											field : 'requestId',
+											title : '操作',
+											width : '14%',
+											toolbar : "#operationDemo"
+										} ] ],
+										response : {
+											statusCode : 1 //成功的状态码，默认：0
+											,
+											msgName : 'message' //状态信息的字段名称，默认：msg
+										}
+									});
+							//监听操作栏
+							table
+									.on(
+											'tool(processDetails)',
+											function(obj) {
+												var node = obj.data //获得当前行数据
+												, layEvent = obj.event; //获得 lay-event 对应的值
+												if (layEvent === 'kill') {
+													//获取访问者ID
+													$
+															.ajax({
+																type : "post",
+																url : "monitor?action=monitorProvider&command=killProcess",
+																async : false,
+																data : {
+																	"pid" : getQueryString("pid"),
+																	"visitorId" : node.visitorId
+
+																},
+																dataType : "json",
+																success : function(
+																		data) {
+																	window.parent.layer
+																			.alert(node.visitorId
+																					+ " is  killed!");
+																	processDetailsTable
+																			.reload();
+																}
+
+															});
+												}
+											});
+						});
+	</script>
+	<!-- 操作栏 -->
+	<script type="text/html" id="operationDemo">
+ 		 <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="kill">kill</a>    
+</script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>antenna-monitor-logTracking</title>
+ 
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    
+    <link rel="stylesheet" href="layui/css/layui.css">
+  <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+
+  <style type="text/css"> 
+      .divcss5-a{margin:10px 0} 
+     </style>
+  </head>
+  
+  <body>
+	<!-- 导航栏 -->
+	<ul class="layui-nav" lay-filter="">
+		  <img src="statics/images/logo.png" alt="logo">
+		<li class="layui-nav-item"><a href="index.html">首页</a></li>
+		<li class="layui-nav-item"><a href="containerDiagram.html">容器试图</a></li>
+		<li class="layui-nav-item layui-this"><a href="logTracking.html">日志跟踪</a></li>
+		<li class="layui-nav-item"><a href="conf.html">配置文件</a></li>
+	</ul>
+	          <!-- 设置上边距 -->
+  <div class="divcss5-a"></div>    
+	       <!-- 搜索条件 -->
+  <form class="layui-form" id="queryLog">
+  <div class="layui-form-item">
+  
+     <div class="layui-inline">
+      <label class="layui-form-mid">创建时间：</label>
+      <div class="layui-input-inline" style="">
+        <input type="text" name="date"  class="layui-input fsDate" id="date" placeholder=" - " lay-verify="required"/>
+      </div>
+      <label class="layui-form-mid">从</label>
+         <div class="layui-input-inline">
+        <input type="text" class="layui-input" id="startTime" name="startTime" placeholder="HH:mm:ss" lay-verify="required">
+        </div>
+      <label class="layui-form-mid">至</label>
+         <div class="layui-input-inline">
+        <input type="text" class="layui-input" id="endTime" name="endTime" placeholder="HH:mm:ss" lay-verify="required">
+        </div>  
+    </div>
+
+ 
+      <div class="layui-inline">
+      <label class="layui-form-mid">容器：</label>
+      <div class="layui-input-inline" style="width: 200px;">
+        <select name="containerId" id="containerId"  lay-filter="containerId" lay-verify="required">
+         <option value="">请选择容器</option>
+         </select>
+      </div>
+      </div>
+        <div class="layui-inline">
+      <label class="layui-form-mid">处理器：</label>
+      <div class="layui-input-inline" style="width: 200px;">
+        <input type="tel"  id="hander" name="hander" autocomplete="off" class="layui-input"/>
+      </div>
+    </div>
+    <div class="layui-inline">
+      <div class="layui-input-inline">
+        <button type="submit" lay-submit="" lay-filter="queryLog"
+					class="layui-btn"><i class="layui-icon">&#xe615;</i>查询</button>
+    </div>
+    
+  </div>
+ </div>
+</form>
+<!-- 日志跟踪表 -->
+<table id="logTracking" lay-filter="logTracking"></table>
+  <div class="layui-tab" lay-filter="demo">
+  <ul class="layui-tab-title">
+    <li class="layui-this">入参</li>
+    <li  lay-id="logs">出参</li>
+  </ul>
+  <div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+    	<textarea style="width:100%;height:150px;"
+		id="requestContent"> 
+    </textarea>
+    </div>
+    <div class="layui-tab-item">
+    	<textarea style="width:100%;height:150px;"
+		id="responseContent"> 
+    </textarea>
+    </div>
+  </div>
+</div>
+<script src="layui/layui.js" charset="utf-8"></script>
+<script type="text/javascript">
+layui.use(['laydate','form','table','element'], function(){
+  var laydate = layui.laydate;
+    var form = layui.form; 
+    var table = layui.table;
+    var element = layui.element;
+    var requestContent=null;
+    var responseContent=null;
+  //执行一个laydate实例
+  laydate.render({
+    elem: '#date' //指定元素
+  });
+    //时间选择器
+  laydate.render({
+    elem: '#startTime'
+    ,type: 'time'
+  });
+    laydate.render({
+    elem: '#endTime'
+    ,type: 'time'
+  });
+          //监听Tab切换
+  element.on('tab(demo)', function(data){
+     
+   if("入参"==this.innerHTML){
+      layer.msg("刷新效果");
+        	document.getElementById("requestContent").value = requestContent;
+    
+   }if("出参"==this.innerHTML){    
+        	document.getElementById("responseContent").value = responseContent;  
+   }
+  });	
+    //查询容器
+  $.ajax({
+     type: "get",
+     url: "monitor?action=monitorProvider&command=containerList",
+     dataType: "json",
+     success: function (d) {
+             array=d.data;             
+            for (var i = 0; i < array.length; i++) {    
+                $("#containerId").append("<option value='"+ array[i].pid +"'>" + array[i].pid+"/"+array[i].cap + "</option>");
+              }
+              //刷新select选择框渲染
+               form.render('select'); 
+         }
+        
+     });
+     
+    //点击form后加载表格
+     	  //监听提交
+		  form.on('submit(queryLog)', function(data){
+		  //获取对象
+		  var attribute=data.field;
+		
+		  //开始时间 拼接
+		  var startTime=attribute.date+" "+attribute.startTime;
+		  //结束时间
+		  var endTime=attribute.date+" "+attribute.endTime;
+		  //日志表格加载
+    table.render({
+    elem: '#logTracking'
+    ,id:  'logTracking'
+    ,height: 470
+    ,url: 'monitor?action=monitorProvider&command=queryLogDetail' //数据接口
+    ,where: {containerId:attribute.containerId , hander: attribute.hander, startTime: startTime, endTime: endTime}
+    ,page: true //开启分页
+    ,cols: [[ //表头
+       {type: 'numbers', title:'序号', width: '3%' ,event: 'setSign', style:'cursor: pointer;'}
+      ,{field: 'containerId', title: '所属容器', width:'18%',event: 'setSign', style:'cursor: pointer;'}
+      ,{field: 'isServer', title: '调用方向',width:'7%',event: 'setSign', style:'cursor: pointer;'}
+      ,{field: 'requestId', title: '请求ID', width:'18%',event: 'setSign', style:'cursor: pointer;'} 
+      ,{field: 'requetTimestamp', title: '请求时间',width: '18%',event: 'setSign', style:'cursor: pointer;'}
+      ,{field: 'responseTimestamp', title: '返回时间',width: '18%',event: 'setSign', style:'cursor: pointer;'}
+      ,{field: 'executeTime', title: '执行时长',width: '18%',event: 'setSign', style:'cursor: pointer;'}
+      ,{field: 'requestContent',minWidth:'0%',width:'0%',style :'display: none'}
+      ,{field: 'responseContent',minWidth:'0%',width:'0%' ,style :'display: none'}
+    ]],
+	response: {
+		  statusCode: 1 //成功的状态码，默认：0
+		  ,msgName: 'message' //状态信息的字段名称，默认：msg
+		 }   
+  });
+				return false;
+		  });
+//监听单元格单击事件
+    table.on('tool(logTracking)', function(obj){ 
+    var data = obj.data //获得当前行数据
+    ,layEvent = obj.event; //获得 lay-event 对应的值
+    //单击选择
+    if(obj.event === 'setSign'){
+    requestContent=data.requestContent;
+    responseContent=data.responseContent;
+   	document.getElementById("requestContent").value = requestContent;
+   	document.getElementById("responseContent").value = responseContent;  
+    };
+    });
+    
+	  
+	  	  
+});
+</script>
+  </body>
+</html>
