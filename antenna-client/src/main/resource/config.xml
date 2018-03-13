@@ -48,7 +48,7 @@
 				invokerclass="" serviceclass="com.waspring.framework.antenna.client.ParseStringService"
 				retry-strategy-id="defaultRetry">
 			</invoker>
-			<invoker id="invokeHu8hu" post-url="http://www.hu8hu2.com"
+			<invoker id="invokeHu8hu" post-url="http://www.hu8hu.com"
 				serviceclass="com.waspring.framework.antenna.client.HttpInvokerService">
 			</invoker>
 		</invokers>
