@@ -16,5 +16,5 @@ import java.lang.annotation.Target;
 public @interface RequestField {
 	public String name() default "";//// 参数为名字，如果为空，那么会默认使用当前字段名
 
-	public String descrption() default "";//// 字段描述信息
+	public String description() default "";//// 字段描述信息
 }
