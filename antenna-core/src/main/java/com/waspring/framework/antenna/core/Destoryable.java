@@ -1,4 +1,4 @@
-package com.waspring.framework.antenna.core;
+﻿package com.waspring.framework.antenna.core;
 
 /**
  * 是否可销毁
@@ -7,5 +7,8 @@ package com.waspring.framework.antenna.core;
  */
 public interface  Destoryable {
 
+        /**
+销毁方法
+**/
 	void destory()  ;
 }
